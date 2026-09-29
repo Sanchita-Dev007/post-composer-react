@@ -1,6 +1,10 @@
 import { useState } from "react";
 import "./App.css";
 
+import PlatformSelector from "./components/PlatformSelector";
+import PostTextarea from "./components/PostTextarea";
+import CharacterCounter from "./components/CharacterCounter";
+
 function App() {
   const [platform, setPlatform] = useState("twitter");
   const [post, setPost] = useState("");
@@ -14,11 +18,6 @@ function App() {
   const characterCount = post.length;
   const remainingCharacters = maxLength - characterCount;
   const isExceeded = characterCount > maxLength;
-
-  const progress = Math.min(
-    (characterCount / maxLength) * 100,
-    100
-  );
 
   const handlePlatformChange = (selectedPlatform) => {
     setPlatform(selectedPlatform);
@@ -34,17 +33,13 @@ function App() {
 
   return (
     <div className="app">
-
-      {/* Background Effects */}
       <div className="orb orb-purple"></div>
       <div className="orb orb-blue"></div>
       <div className="grid-background"></div>
 
       <div className="page-wrapper">
 
-        {/* Top Navigation */}
         <nav className="top-nav">
-
           <div className="brand">
             <div className="brand-icon">✦</div>
 
@@ -58,12 +53,9 @@ function App() {
             <span className="online-dot"></span>
             Live Editor
           </div>
-
         </nav>
 
-        {/* Hero */}
         <header className="hero">
-
           <div>
             <div className="hero-label">
               <span>CREATE</span>
@@ -81,13 +73,11 @@ function App() {
               validation and instant preview.
             </p>
           </div>
-
         </header>
 
-        {/* Main Workspace */}
         <main className="workspace">
 
-          {/* Left Editor */}
+          {/* Editor */}
           <section className="editor-panel">
 
             <div className="panel-header">
@@ -96,155 +86,26 @@ function App() {
                 <h2>Create your post</h2>
               </div>
 
-              <div className="step-badge">
-                01
-              </div>
+              <div className="step-badge">01</div>
             </div>
 
-            {/* Platform */}
-            <div className="field">
+            <PlatformSelector
+              platform={platform}
+              onPlatformChange={handlePlatformChange}
+            />
 
-              <div className="field-heading">
-                <label>Select platform</label>
+            <PostTextarea
+              post={post}
+              onPostChange={handlePostChange}
+              characterCount={characterCount}
+              maxLength={maxLength}
+              isExceeded={isExceeded}
+              platform={platform}
+            />
 
-                <span className="limit-label">
-                  Limit: {maxLength.toLocaleString()}
-                </span>
-              </div>
-
-              <div className="platform-grid">
-
-                {/* Twitter */}
-                <button
-                  className={`platform-card ${
-                    platform === "twitter" ? "selected twitter-card" : ""
-                  }`}
-                  onClick={() => handlePlatformChange("twitter")}
-                >
-
-                  <div className="platform-icon twitter-icon">
-                    𝕏
-                  </div>
-
-                  <div className="platform-info">
-                    <strong>Twitter / X</strong>
-                    <span>280 characters</span>
-                  </div>
-
-                  <div className="selection-mark">
-                    {platform === "twitter" ? "✓" : ""}
-                  </div>
-
-                </button>
-
-                {/* LinkedIn */}
-                <button
-                  className={`platform-card ${
-                    platform === "linkedin"
-                      ? "selected linkedin-card"
-                      : ""
-                  }`}
-                  onClick={() => handlePlatformChange("linkedin")}
-                >
-
-                  <div className="platform-icon linkedin-icon">
-                    in
-                  </div>
-
-                  <div className="platform-info">
-                    <strong>LinkedIn</strong>
-                    <span>3,000 characters</span>
-                  </div>
-
-                  <div className="selection-mark">
-                    {platform === "linkedin" ? "✓" : ""}
-                  </div>
-
-                </button>
-
-              </div>
-            </div>
-
-            {/* Textarea */}
-            <div className="field">
-
-              <div className="field-heading">
-                <label>Write your content</label>
-
-                <span className="live-label">
-                  ● LIVE
-                </span>
-              </div>
-
-              <div
-                className={`textarea-container ${
-                  isExceeded ? "textarea-error" : ""
-                }`}
-              >
-
-                <textarea
-                  value={post}
-                  onChange={handlePostChange}
-                  placeholder={
-                    platform === "twitter"
-                      ? "What's happening?"
-                      : "Share an idea, achievement, insight or story with your network..."
-                  }
-                />
-
-                <div className="textarea-bottom">
-
-                  <span>
-                    {post
-                      ? "Your content is being analyzed..."
-                      : "Start typing to see the live preview"}
-                  </span>
-
-                  <span
-                    className={
-                      isExceeded
-                        ? "count-error"
-                        : "count-normal"
-                    }
-                  >
-                    {characterCount.toLocaleString()} /{" "}
-                    {maxLength.toLocaleString()}
-                  </span>
-
-                </div>
-
-              </div>
-
-              {/* Error */}
-              {isExceeded && (
-                <div className="error-box">
-
-                  <div className="error-icon">
-                    !
-                  </div>
-
-                  <div>
-                    <strong>Character limit exceeded</strong>
-
-                    <p>
-                      Remove{" "}
-                      <b>
-                        {Math.abs(remainingCharacters).toLocaleString()}
-                      </b>{" "}
-                      characters to continue.
-                    </p>
-                  </div>
-
-                </div>
-              )}
-
-            </div>
-
-            {/* Bottom Editor Controls */}
             <div className="editor-footer">
 
               <div className="validation-status">
-
                 <span
                   className={`status-dot ${
                     isExceeded ? "status-error" : ""
@@ -256,7 +117,6 @@ function App() {
                     ? "Content needs attention"
                     : "Content is within limit"}
                 </span>
-
               </div>
 
               <div className="editor-actions">
@@ -278,33 +138,24 @@ function App() {
                 </button>
 
               </div>
-
             </div>
-
           </section>
 
-          {/* Right Preview */}
+          {/* Preview */}
           <section className="preview-panel">
 
             <div className="panel-header">
-
               <div>
                 <span className="panel-label">PREVIEW</span>
                 <h2>See how it looks</h2>
               </div>
 
-              <div className="step-badge">
-                02
-              </div>
-
+              <div className="step-badge">02</div>
             </div>
 
-            {/* Preview Card */}
             <div
               className={`social-preview ${
-                platform === "linkedin"
-                  ? "linkedin-preview"
-                  : ""
+                platform === "linkedin" ? "linkedin-preview" : ""
               }`}
             >
 
@@ -322,6 +173,7 @@ function App() {
 
                 <div className="user-info">
                   <strong>Sanchita</strong>
+
                   <span>
                     {platform === "twitter"
                       ? "@sanchita · now"
@@ -336,7 +188,6 @@ function App() {
               </div>
 
               <div className="preview-content">
-
                 {post ? (
                   <p>{post}</p>
                 ) : (
@@ -344,13 +195,11 @@ function App() {
                     Your post preview will appear here as you type...
                   </p>
                 )}
-
               </div>
 
               <div className="preview-divider"></div>
 
               <div className="preview-meta">
-
                 <span>
                   {characterCount.toLocaleString()} characters
                 </span>
@@ -362,63 +211,26 @@ function App() {
                         remainingCharacters
                       ).toLocaleString()} over limit`}
                 </span>
-
               </div>
 
             </div>
 
-            {/* Character Progress */}
-            <div className="progress-card">
+            <CharacterCounter
+              characterCount={characterCount}
+              maxLength={maxLength}
+              isExceeded={isExceeded}
+            />
 
-              <div className="progress-header">
-
-                <div>
-                  <span>Character usage</span>
-                  <strong>
-                    {Math.round(progress)}%
-                  </strong>
-                </div>
-
-              </div>
-
-              <div className="progress-track">
-                <div
-                  className={`progress-fill ${
-                    isExceeded ? "progress-error" : ""
-                  }`}
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-
-              <div className="progress-info">
-
-                <span>
-                  {characterCount.toLocaleString()} used
-                </span>
-
-                <span>
-                  {maxLength.toLocaleString()} maximum
-                </span>
-
-              </div>
-
-            </div>
-
-            {/* Tips */}
             <div className="tip-card">
 
-              <div className="tip-icon">
-                ✦
-              </div>
+              <div className="tip-icon">✦</div>
 
               <div>
-                <strong>
-                  Writing tip
-                </strong>
+                <strong>Writing tip</strong>
 
                 <p>
-                  Keep your message clear, concise and
-                  engaging for better readability.
+                  Keep your message clear, concise and engaging
+                  for better readability.
                 </p>
               </div>
 
@@ -428,25 +240,12 @@ function App() {
 
         </main>
 
-        {/* Bottom Footer */}
         <footer className="page-footer">
-
-          <span>
-            React Controlled Component
-          </span>
-
+          <span>React Controlled Component</span>
           <span>•</span>
-
-          <span>
-            Live Validation
-          </span>
-
+          <span>Live Validation</span>
           <span>•</span>
-
-          <span>
-            Dynamic Character Limits
-          </span>
-
+          <span>Dynamic Character Limits</span>
         </footer>
 
       </div>
